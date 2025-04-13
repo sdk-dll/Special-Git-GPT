@@ -5,7 +5,6 @@ from langfuse.decorators import observe
 from smolagents import OpenAIServerModel, ToolCallingAgent
 import git
 import os
-import shutil
 
 langfuse = Langfuse(
     public_key="pk-lf-1e88a751-e94e-411a-8df4-6f351be3b82b",  
@@ -151,6 +150,11 @@ def generate_response(github_link, user_input, system_prompt=None, temperature=0
     )
     return f"Модель ({generation_time:.2f} сек): {assistant_reply}"
 
+def new_chat():
+    global messages
+    messages = []
+    return None
+
 with gr.Blocks(css="""
     body { background-color: #1E1E1E; color: #5E5E61; }
     .sidebar { background-color: #2E2D31; color: white; padding: 35px; border-radius: 4px; }
@@ -212,11 +216,6 @@ with gr.Blocks(css="""
                     elem_classes="nav-button",
                     variant="secondary"
                 )
-                history_button = gr.Button(
-                    "История чатов",
-                    elem_classes="nav-button",
-                    variant="secondary"
-                )
         with gr.Column(scale=3):
             chatbot = gr.Chatbot(label="Диалог с моделью", type="messages")
             github_link = gr.Textbox(
@@ -246,7 +245,7 @@ with gr.Blocks(css="""
                     info="Фильтрует токены, которые покрывают заданную вероятность"
                 )
             submit_button = gr.Button("Отправить", elem_classes="submit-button")
-
+    
     def update_chat(github_link, user_message, temperature, max_tokens, top_p, chat_history):
         global messages
         response = generate_response(
@@ -276,6 +275,12 @@ with gr.Blocks(css="""
         chat_history.append({"role": "user", "content": user_message})
         chat_history.append({"role": "assistant", "content": response})
         return "", "", temperature, max_tokens, top_p, chat_history
+    
+    new_chat_button.click(
+        new_chat,
+        inputs=[],
+        outputs=[chatbot]
+    )
 
     submit_button.click(
         update_chat,
