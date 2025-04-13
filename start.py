@@ -145,7 +145,8 @@ def generate_response(github_link, user_input, system_prompt=None, temperature=0
             "generation_time": generation_time,
             "temperature": temperature,
             "max_tokens": max_tokens,
-            "top_p": top_p
+            "top_p": top_p,
+            "messages": messages
         }
     )
     return f"Модель ({generation_time:.2f} сек): {assistant_reply}"
