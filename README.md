@@ -16,3 +16,7 @@ SPECIAL GIT-GPT — это инструмент для анализа Git-реп
 
 ```bash
 pip install -r requirements.txt
+```
+---
+
+> May the force be with You!
